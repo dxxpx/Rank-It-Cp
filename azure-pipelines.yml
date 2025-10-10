@@ -1,49 +1,29 @@
 trigger:
-  branches:
-    include:
-    - main
-  paths:
-    exclude:
-    - README.md
+- main
 
 pool:
   vmImage: 'ubuntu-latest'
 
-variables:
-  flutterVersion: '3.13.9'
-
 steps:
-- task: UsePythonVersion@0
+- task: CmdLine@2
   inputs:
-    versionSpec: '3.x'
-    addToPath: true
+    script: |
+      # Install Flutter without using parallel jobs
+      git clone https://github.com/flutter/flutter.git -b 3.13.9 --depth 1
+      echo "##vso[task.prependpath]$(pwd)/flutter/bin"
+      flutter doctor -v
+    displayName: 'Install Flutter'
 
 - script: |
-    git clone https://github.com/flutter/flutter.git -b $(flutterVersion) --depth 1
-    echo "##vso[task.prependpath]$(pwd)/flutter/bin"
-  displayName: 'Install Flutter SDK'
-
-- script: |
-    flutter doctor -v
     flutter pub get
-  displayName: 'Flutter Doctor & Dependencies'
-
-- script: |
     flutter test
-  displayName: 'Run Tests'
+  displayName: 'Dependencies & Tests'
 
 - script: |
     flutter build apk --release --split-per-abi
-  displayName: 'Build Android APK'
-
-- task: CopyFiles@2
-  inputs:
-    contents: 'build/app/outputs/flutter-apk/**/*.apk'
-    targetFolder: '$(build.artifactStagingDirectory)'
-    cleanTargetFolder: true
+  displayName: 'Build APK'
 
 - task: PublishBuildArtifacts@1
   inputs:
-    pathtoPublish: '$(build.artifactStagingDirectory)'
+    pathtoPublish: 'build/app/outputs/flutter-apk'
     artifactName: 'android-apk'
-    publishLocation: 'Container'
