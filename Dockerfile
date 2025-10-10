@@ -1,30 +1,29 @@
 # Build stage
-FROM cirrusci/flutter:stable AS build
-
+FROM ghcr.io/cirruslabs/flutter:3.35.4 AS build
 WORKDIR /app
 
-# Copy pubspec files
-COPY pubspec.yaml ./
+# Copy the project
+COPY . .
+
+# Get dependencies
 RUN flutter pub get
 
-# Copy source code and build
-COPY . .
+# Build APK
 RUN flutter build apk --release
 
 # Runtime stage
 FROM alpine:latest
+WORKDIR /app
 
-# Install necessary runtime dependencies
+# Install bash
 RUN apk add --no-cache bash
 
-# Copy built APK from build stage
-COPY --from=build /app/build/app/outputs/flutter-apk/app-release.apk /app/app-release.apk
+# Copy APK to mounted folder
+COPY --from=build /app/build/app/outputs/flutter-apk/app-release.apk /app/output/app-release.apk
 
-# Create a simple script to serve the APK
+# Update script
 RUN echo '#!/bin/bash' > /app/start.sh && \
-    echo 'echo "Flutter APK is built and available at /app/app-release.apk"' >> /app/start.sh && \
-    echo 'echo "You can extract it using: docker cp <container_id>:/app/app-release.apk ."' >> /app/start.sh && \
+    echo 'echo "Flutter APK is built and available at /app/output/app-release.apk"' >> /app/start.sh && \
     chmod +x /app/start.sh
 
-WORKDIR /app
 CMD ["/app/start.sh"]
