@@ -1,0 +1,428 @@
+{
+  "XYN25-001": {
+    "team_name": "VITals",
+    "members": ["Dikshay C", "Shree Aditya", "Shefana Raja", "Varsha V"],
+    "college": "Vit chennai",
+    "location": "Chennai",
+    "lead_contact": "9840213201"
+  },
+  "XYN25-002": {
+    "team_name": "Atreides",
+    "members": [
+      "Shiva Naveen S",
+      "Mithulpranav R B",
+      "Dharanibalaji A M",
+      "Kavyashree R",
+      "Versia Sri A",
+      "Lavanya S"
+    ],
+    "college": "Kpr institute of Engineering and technology",
+    "location": "Coimbatore",
+    "lead_contact": "9080080699"
+  },
+  "XYN25-003": {
+    "team_name": "Hack Smiths",
+    "members": [
+      "Mohamed Riyaz Ahamed",
+      "Manikandan T",
+      "Someshwar S",
+      "Ramitha Chowdary",
+      "Eesha Ranka"
+    ],
+    "college": "Saveetha engineering college",
+    "location": "Chennai",
+    "lead_contact": "8939247622"
+  },
+  "XYN25-004": {
+    "team_name": "Crypto Intelligence",
+    "members": [
+      "R.Merlin Thanga Savitha",
+      "R.Preethi Shri",
+      "S.Pradeepa",
+      "Rashmika K B",
+      "Abinaya P K",
+      "J.Shamily Rethesia"
+    ],
+    "college": "Thiagarajar College of Engineering",
+    "location": "Madurai",
+    "lead_contact": "9361393926"
+  },
+
+  "XYN25-005": {
+    "team_name": "CacheCrew",
+    "members": [
+      "Meyyappan Dm",
+      "Ranjit S",
+      "Kanimozhi H",
+      "Kannishka S",
+      "Manisha N",
+      "Prathikshaa B"
+    ],
+    "college": "Sri Venkateswara College of Engineering",
+    "location": "Chennai",
+    "lead_contact": "9150359113"
+  },
+  "XYN25-006": {
+    "team_name": "One For All",
+    "members": ["Rishi RL", "Rahul S", "Swathy C", "Rithika H"],
+    "college": "Rajalakshmi Engineering College",
+    "location": "Chennai",
+    "lead_contact": "9361144379"
+  },
+  "XYN25-007": {
+    "team_name": "The Rizzen",
+    "members": [
+      "Jayaram S",
+      "Mano Sri Ram K",
+      "Manmohan P S",
+      "Muhammad Bilal S",
+      "Arun Kumar J",
+      "Pooja D V"
+    ],
+    "college": "Sri Sairam Institute of Technology",
+    "location": "Chennai",
+    "lead_contact": "7305054930"
+  },
+  "XYN25-008": {
+    "team_name": "Code99",
+    "members": [
+      "K Thanushree",
+      "Mahalaxmi R",
+      "Riddisa Ranganathan",
+      "Tejaswini G",
+      "Kavya I"
+    ],
+    "college": "Shiv Nadar University Chennai",
+    "location": "Chennai",
+    "lead_contact": "9655847834"
+  },
+
+  "XYN25-009": {
+    "team_name": "Intervix",
+    "members": [
+      "Abbhishek behera",
+      "Ragul T",
+      "Vidhesh D",
+      "Harini. P",
+      "Harini.A"
+    ],
+    "college": "Sri Manakula Vinayagar Engineering College",
+    "location": "Pondicherry",
+    "lead_contact": "8925442895"
+  },
+
+
+  "XYN25-010": {
+    "team_name": "DigiSquad",
+    "members": [
+      "Nagulan T",
+      "Manikandan S",
+      "Ramsurath R S",
+      "Maria Joseline M",
+      "Monisha R S",
+      "Mamtha M"
+    ],
+    "college": "Sona College of Technology",
+    "location": "Salem",
+    "lead_contact": "9894207062"
+  },
+  "XYN25-011": {
+    "team_name": "Tech Pulse",
+    "members": [
+      "Pugazh M",
+      "Aakash A",
+      "Keerthana P",
+      "Afshana fathima A",
+      "Ankitha J",
+      "Hashanthra"
+    ],
+    "college": "Jerusalem college of Engineering",
+    "location": "Chennai",
+    "lead_contact": "6383907227"
+  },
+  "XYN25-012": {
+    "team_name": "Code knights",
+    "members": [
+      "Abdul Razak N",
+      "Prabhakaran P",
+      "Joel Masilamani",
+      "Sanchita Sandeep",
+      "Rithika R",
+      "Swetha SV"
+    ],
+    "college": "Saveetha Engineering college",
+    "location": "Chennai",
+    "lead_contact": "8124311602"
+  },
+  "XYN25-013": {
+    "team_name": "Spartans",
+    "members": [
+      "Madhan R",
+      "Alexander Karuppaiyah R",
+      "Thiganth k",
+      "Benadict infant",
+      "Elangovan s",
+      "Akshaya p"
+    ],
+    "college": "Sona College of Technology",
+    "location": "Salem",
+    "lead_contact": "6374722300"
+  },
+  "XYN25-014": {
+    "team_name": "Dev coders",
+    "members": [
+      "Vaishnavi G",
+      "Suriyasri S",
+      "Lavanya K",
+      "Shopitha K",
+      "Shanmadhi R G",
+      "Vaishnavi G"
+    ],
+    "college": "St. Joseph's college of engineering",
+    "location": "Chennai",
+    "lead_contact": "8056269047"
+  },
+  "XYN25-015": {
+    "team_name": "Stormbreakers",
+    "members": [
+      "Prakash Rai P",
+      "Vishnu S",
+      "Annapoorani Lakshmanan",
+      "Sandhiya R",
+      "Sindhura SP"
+    ],
+    "college": "Jerusalem College of Engineering",
+    "location": "Chennai",
+    "lead_contact": "9363071170"
+  },
+  "XYN25-016": {
+    "team_name": "Tera",
+    "members": [
+      "Manish M",
+      "Madhan S",
+      "Jyoti Prakash Behera",
+      "NV Yogeshwaran",
+      "Deepika Samad",
+      "Samyuktha S"
+    ],
+    "college": "Hindustan Institute of Technology and Science",
+    "location": "Chennai",
+    "lead_contact": "9952994607"
+  },
+  "XYN25-017": {
+    "team_name": "Sixth Circuit",
+    "members": [
+      "DHARNISH BM",
+      "Arun S",
+      "DHURGASHREE I",
+      "DIVYA R",
+      "BHARANI R",
+      "ANISHMA RS"
+    ],
+    "college": "KONGU ENGINEERING COLLEGE",
+    "location": "Erode",
+    "lead_contact": "9842375676"
+  },
+  "XYN25-018": {
+    "team_name": "MissionX",
+    "members": ["J.S.Lekshmi Priya", "Naseeha.T", "S.Nawfa Sireen", "Reshma.J"],
+    "college": "Arunachala College of Engineering for Women",
+    "location": "Kanyakumari",
+    "lead_contact": "9042824227"
+  },
+  "XYN25-019": {
+    "team_name": "HogWarts",
+    "members": [
+      "Shivaani V G",
+      "Lokitha K",
+      "Vishnulakshmi A",
+      "Kaviyaa P S",
+      "Kavitha S"
+    ],
+    "college": "Sri Manakula Vinayagar Engineering Collegee",
+    "location": "Puducherry",
+    "lead_contact": "7806934534"
+  },
+  "XYN25-020": {
+    "team_name": "Novicers",
+    "members": [
+      "N.K Roshan Kumar",
+      "N. Jeyadheesh",
+      "S. Siva Prakash",
+      "Harini Rengarajan",
+      "R. Yuva Sri"
+    ],
+    "college": "Kamaraj College of Engineering and Technology",
+    "location": "Madurai",
+    "lead_contact": "9363394915"
+  },
+  "XYN25-021": {
+    "team_name": "Team Sentinels",
+    "members": ["Lithesh M", "Fahim Ahamed B", "Karunya M", "Jayalakshmi M","Kartickeeyaan M"],
+    "college": "Rajalakshmi engineering college",
+    "location": "Chennai",
+    "lead_contact": "8610088259"
+  },
+  "XYN25-022": {
+    "team_name": "TechTonix",
+    "members": ["Mohan Raj S", "Rithish K", "Mounish V", "Nashrin Fathima K"],
+    "college": "Sri Eshwar College of Engineering",
+    "location": "Coimbatore",
+    "lead_contact": "9629944783"
+  },
+  "XYN25-023": {
+    "team_name": "INFINITY LOOP",
+    "members": [
+      "Shreyas Gupta",
+      "Anurag Tomar",
+      "Alphy Sebastian",
+      "Ashwin Nair",
+      "Ahamed Zain",
+      "Meenakshi Sanath"
+    ],
+    "college": "SRM Institute of Science and Technology, KTR",
+    "location": "Chennai",
+    "lead_contact": "9151606122"
+  },
+  "XYN25-024": {
+    "team_name": "Electrips",
+    "members": ["Thenmozhi N", "Akshaya Settu", "Dharshini V.S", "Keerthana S"],
+    "college": "Saveetha Engineering College",
+    "location": "Chennai",
+    "lead_contact": "9344088545"
+  },
+
+
+  "XYN25-025": {
+    "team_name": "SAKSHaM",
+    "members": [
+      "Aayush Samal",
+      "Harsh Srivastava",
+      "Keval Solankure",
+      "Aryan Choudhary",
+      "Swathi P"
+    ],
+    "college": "SRM Institute, Vadapalani",
+    "location": "Chennai",
+    "lead_contact": "7328045746"
+  },
+  "XYN25-026": {
+    "team_name": "Q-detect",
+    "members": ["Sanjith D", "Subeshan C", "Sangeetha S", "Subashri I"],
+    "college": "Sri manakula Vinayagar engineering college",
+    "location": "Puducherry",
+    "lead_contact": "6379357986"
+  },
+  "XYN25-027": {
+    "team_name": "TrishulX",
+    "members": [
+      "Pranshu Chourasia",
+      "Divesh Anand",
+      "Shubham Kumar Jha",
+      "Anshukumari kumar",
+      "Anjali kumari "
+    ],
+    "college": "Vel tech University",
+    "location": "Chennai",
+    "lead_contact": "8789520648"
+  },
+  "XYN25-028": {
+    "team_name": "INFITECH",
+    "members": [
+      "SOUNTHAR R",
+      "Pradeep Behera",
+      "Srivarsha suresh",
+      "Gayisha rajesh"
+    ],
+    "college": "Vels institute of science and technology",
+    "location": "Chennai",
+    "lead_contact": "9360011447"
+  },
+  "XYN25-029": {
+    "team_name": "Paper_Planes",
+    "members": [
+      "Lalith D",
+      "Lokesh R",
+      "Kishore J M",
+      "Meiappan P",
+      "Lavanya P",
+      "Monika J"
+    ],
+    "college": "Rajalakshmi Engineering college",
+    "location": "Chennai",
+    "lead_contact": "9042805089"
+  },
+  "XYN25-030": {
+    "team_name": "DEFENX",
+    "members": [
+      "Mathivarshini TK",
+      "Subhashree NS",
+      "Amna Sajith",
+      "Devika B",
+      "Shreya Subramaniam"
+    ],
+    "college": "SRM University, Ramapuram",
+    "location": "Chennai",
+    "lead_contact": "7904731290"
+  },
+  "XYN25-031": {
+    "team_name": "Tech tribes",
+    "members": [
+      "Sidmal madhan",
+      "Shareng S",
+      "Z Barkath Nisha",
+      "Roopa Nagaraj Doddamani",
+      "Divya S",
+      "Maski Sneha"
+    ],
+    "college": "Dayananda sagar University",
+    "location": "Bangalore",
+    "lead_contact": "7847843688"
+  },
+  "XYN25-032": {
+    "team_name": "Virtual Whizzes 300",
+    "members": [
+      "Shreya R",
+      "Divya Shree M",
+      "Lakshitha S",
+      "Aadithya SJ",
+      "Lokesh C M"
+    ],
+    "college": "Sri Sairam Engineering College",
+    "location": "Chennai",
+    "lead_contact": "9790724567"
+  },
+  "XYN25-033": {
+    "team_name": "PLAYERS",
+    "members": ["TRISSHA A S", "Madhumita Kannan", "Roshni B", "Buvanesh .S"],
+    "college": "Vel Tech Rangarajan Dr.Sagunthala R&D Institute of Science and Technology",
+    "location": "Chennai",
+    "lead_contact": "8072078246"
+  },
+  "XYN25-034": {
+    "team_name": "Arasaka",
+    "members": [
+      "Nishanthi M",
+      "Sowmiya P",
+      "Akalya J",
+      "R Niranjan",
+      "Soundar Palanibharathi K"
+    ],
+    "college": "Jerusalem College Of Engineering ",
+    "location": "Chennai",
+    "lead_contact": "9345414914"
+  },
+  "XYN25-035": {
+    "team_name": "PEC Techies",
+    "members": [
+      "Boobesh AG",
+      "Harish V",
+      "Sai Sumanth G",
+      "Harini K",
+      "Suja K"
+    ],
+    "college": "Panimalar Engineering College",
+    "location": "Chennai",
+    "lead_contact": "9500155519"
+  }
+}

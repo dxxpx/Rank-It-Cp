@@ -1,0 +1,100 @@
+Future<Map<String, dynamic>?> fetchTeamMarks({
+    required String teamCode,
+    required int eval_number,
+  }) async {
+    print("Fetching marks for team code: $teamCode");
+    String eval_sheet_name = eval_number == 1 ? "E1%20Scores" : "E2%20Scores";
+    final url = Uri.parse(
+      'https://script.google.com/macros/s/AKfycbwaGc1uKBHC9K6U1PNEvdvq9IzuS5MPBFZ_W-Doti93okBGWkfxCdJMWsY84QLYrPC_/exec?team_code=$teamCode&eval_sheet=$eval_sheet_name',
+    );
+
+    final response = await http.get(url);
+    log(response.body);
+    if (response.statusCode == 200) {
+      try {
+        // Attempt to parse only if it's valid JSON
+        final data = jsonDecode(response.body);
+        return data;
+      } catch (e) {
+        print("Parsing error: ${e.toString()}");
+        return null;
+      }
+    } else {
+      print("HTTP request failed with status ${response.statusCode}");
+      return null;
+    }
+  }
+
+
+CALL IT AS:
+fetchTeamMarks(
+            teamCode: "TEAM001",
+            eval_number: isEvaluation1 ? 1 : 2,
+          );
+
+  Future<List<Map<String, dynamic>>> fetchTeamRankings() async {
+    final url = Uri.parse(
+      'https://script.google.com/macros/s/AKfycbyTWB2f9d0Rf47Rv5gaUeTXd9RYbu4BAT_ISfIZ7ki0DbXqGWrQVYOrWJgG1iyZej1X/exec',
+    );
+
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      try {
+        final List<dynamic> jsonList = jsonDecode(response.body);
+        return jsonList.cast<Map<String, dynamic>>();
+      } catch (e) {
+        print("Parsing error: ${e.toString()}");
+        return [];
+      }
+    } else {
+      print("HTTP request failed with status ${response.statusCode}");
+      return [];
+    }
+  }
+
+  Future<void> _submitForm() async {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+
+      double total = (formData['clarity'] ?? 0) +
+          (formData['progress'] ?? 0) +
+          (formData['technicalDepth'] ?? 0) +
+          (formData['innovation'] ?? 0) +
+          (formData['collaboration'] ?? 0) +
+          (formData['scalability'] ?? 0);
+
+      Map<String, dynamic> finalData = {
+        ...formData,
+        'totalScore': total.round()
+      };
+
+      final response = await http.post(
+        Uri.parse('https://script.google.com/macros/s/AKfycby6Lc_e6O9r5Kf7tB1BXEfV-_lTXkN-KaLzW9l3H-ueNTwjrqMZT9pvoaLRelQ3dFUw/exec'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(finalData),
+      );
+    }
+  }
+
+Future<void> fetchEvaluationStatus(String teamCode) async {
+    final url = Uri.parse(
+      'https://script.google.com/macros/s/AKfycbwaGc1uKBHC9K6U1PNEvdvq9IzuS5MPBFZ_W-Doti93okBGWkfxCdJMWsY84QLYrPC_/exec?check_evaluation_status=true&team_code=$teamCode',
+    );
+
+    try {
+      final response = await http.get(url);
+      if (response.statusCode == 200) {
+        final data = jsonDecode(response.body);
+        setState(() {
+          e1Status = data['e1_status'] ?? false;
+          e2Status = data['e2_status'] ?? false;
+          log('Eval 1 : $e1Status , Eval 2 : $e2Status');
+        });
+      } else {
+        print("HTTP Error: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching evaluation statusasdfgh: $e");
+    }
+  }

@@ -1,0 +1,15 @@
+.git
+.gitignore
+README.md
+.dockerignore
+Dockerfile
+build/
+.dart_tool/
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*~
