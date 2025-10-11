@@ -10,7 +10,7 @@ pool:
   vmImage: 'ubuntu-latest'
 
 variables:
-  flutterVersion: '3.13.9'
+  flutterVersion: '3.35.6'
 
 steps:
 - task: UsePythonVersion@0
