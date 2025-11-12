@@ -4,6 +4,9 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
+variables:
+  flutterVersion: '3.35.6'
+
 steps:
 - task: CmdLine@2
   inputs:
