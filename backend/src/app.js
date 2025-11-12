@@ -1,5 +1,9 @@
 // src/app.js
-require("dotenv").config();
+// at top of file (only load dotenv for local dev)
+if (process.env.NODE_ENV !== "production") {
+  require("dotenv").config();
+}
+
 const express = require("express");
 const bodyParser = require("body-parser");
 const sheetsRouter = require("./routes/sheetRoutes.js");
@@ -15,10 +19,29 @@ app.use("/", sheetsRouter);
 // simple health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
-const server = app.listen(PORT, () =>
-  console.log(`Sheet backend running on port ${PORT}`)
+// choose port from several env vars and safely parse it
+const rawPort =
+  process.env.PORT ??
+  process.env.WEBSITE_PORT ??
+  process.env.PORT_NUMBER ??
+  "4000";
+const parsed = Number.parseInt(rawPort, 10);
+const port =
+  Number.isFinite(parsed) && parsed > 0 && parsed < 65536 ? parsed : 4000;
+
+// helpful startup log (do NOT log secrets)
+console.log(
+  `Starting app. NODE_ENV=${process.env.NODE_ENV || "undefined"} PORT envs: PORT=${process.env.PORT} WEBSITE_PORT=${process.env.WEBSITE_PORT} => using port ${port}`
 );
+
+const server = app.listen(port, () =>
+  console.log(`Sheet backend running on port ${port}`)
+);
+
+// const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
+// const server = app.listen(PORT, () =>
+//   console.log(`Sheet backend running on port ${PORT}`)
+// );
 
 const shutDown = async () => {
   console.log("Shutting down server...");
