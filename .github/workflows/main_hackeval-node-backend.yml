@@ -53,6 +53,9 @@ jobs:
           name: node-backend
           path: ./artifact
 
+      - name: Inspect artifact contents
+        run: ls -laR ./artifact || true
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
