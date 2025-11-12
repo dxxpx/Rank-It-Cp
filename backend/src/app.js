@@ -1,4 +1,5 @@
 // src/app.js
+require("dotenv").config();
 const express = require("express");
 const bodyParser = require("body-parser");
 const sheetsRouter = require("./routes/sheetRoutes.js");
@@ -14,7 +15,7 @@ app.use("/", sheetsRouter);
 // simple health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
+const PORT = Number(process.env.PORT);
 const server = app.listen(PORT, () =>
   console.log(`Sheet backend running on port ${PORT}`)
 );
