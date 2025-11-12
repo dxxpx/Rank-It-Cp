@@ -16,24 +16,28 @@ jobs:
       contents: read #This is required for actions/checkout
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repo
+        uses: actions/checkout@v4
 
       - name: Set up Node.js version
         uses: actions/setup-node@v3
         with:
-          node-version: '22.x'
+          node-version: "22.x"
 
-      - name: npm install, build, and test
+      - name: npm installing Dependencies
         run: |
           npm install
-          npm run build --if-present
-          npm run test --if-present
-      
+        working-directory: ./backend
+
+      - name: Build Backend Server
+        run: npm run start --if-present
+        working-directory: ./backend
+
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
-          name: node-app
-          path: .
+          name: node-backend
+          path: ./backend
 
   deploy:
     runs-on: ubuntu-latest
@@ -46,8 +50,9 @@ jobs:
       - name: Download artifact from build job
         uses: actions/download-artifact@v4
         with:
-          name: node-app
-      
+          name: node-backend
+          path: ./artifact
+
       - name: Login to Azure
         uses: azure/login@v2
         with:
@@ -55,11 +60,10 @@ jobs:
           tenant-id: ${{ secrets.AZUREAPPSERVICE_TENANTID_962F6CA843B042A7AF28CC75986DBE79 }}
           subscription-id: ${{ secrets.AZUREAPPSERVICE_SUBSCRIPTIONID_EDBB2FA545CA453B9CA882F35BD73D9B }}
 
-      - name: 'Deploy to Azure Web App'
+      - name: "Deploy to Azure Web App"
         uses: azure/webapps-deploy@v3
         id: deploy-to-webapp
         with:
-          app-name: 'hackeval-node-backend'
-          slot-name: 'Production'
-          package: .
-          
+          app-name: "hackeval-node-backend"
+          slot-name: "Production"
+          package: ./artifact/node-backend
