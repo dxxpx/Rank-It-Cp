@@ -19,23 +19,27 @@ app.use("/", sheetsRouter);
 // simple health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-// choose port from several env vars and safely parse it
-const rawPort =
-  process.env.PORT ??
-  process.env.WEBSITE_PORT ??
-  process.env.PORT_NUMBER ??
-  "4000";
-const parsed = Number.parseInt(rawPort, 10);
-const port =
-  Number.isFinite(parsed) && parsed > 0 && parsed < 65536 ? parsed : 4000;
+const rawPort = process.env.PORT ?? process.env.WEBSITE_PORT ?? "4000";
 
-// helpful startup log (do NOT log secrets)
+// detect Windows named pipe like \\.\pipe\...  OR unix socket path starting with '/'
+const isPipe = (p) =>
+  typeof p === "string" && (p.startsWith("\\\\.\\pipe\\") || p.startsWith("/"));
+
+let port;
+if (isPipe(rawPort)) {
+  port = rawPort; // pass the pipe string directly to listen()
+} else {
+  const parsed = Number.parseInt(rawPort, 10);
+  port =
+    Number.isFinite(parsed) && parsed > 0 && parsed < 65536 ? parsed : 4000;
+}
+
 console.log(
-  `Starting app. NODE_ENV=${process.env.NODE_ENV || "undefined"} PORT envs: PORT=${process.env.PORT} WEBSITE_PORT=${process.env.WEBSITE_PORT} => using port ${port}`
+  `Starting app. NODE_ENV=${process.env.NODE_ENV || "undefined"} PORT env: ${process.env.PORT} => using ${typeof port === "string" ? "pipe" : "port"} ${port}`
 );
 
 const server = app.listen(port, () =>
-  console.log(`Sheet backend running on port ${port}`)
+  console.log("Sheet backend running on", port)
 );
 
 // const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
