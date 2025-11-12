@@ -9,3 +9,8 @@ resource "azurerm_app_service_plan" "hackeval_plan" {
     size = "F1"
   }
 }
+
+resource "azurerm_resource_group" "hackeval" {
+  name     = "rg-hackeval-dev"
+  location = var.location
+}

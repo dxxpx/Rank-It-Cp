@@ -1,11 +1,5 @@
-// app.js
-// Node.js + Express backend using a single shared pg.Pool (persistent across requests)
-// Endpoints:
-//  POST   /sheets                       -> create sheet (creates a Postgres table + metadata)
-//  POST   /sheets/:sheetId/rows         -> add new row (auto-calc sum-columns)
-//  PUT    /sheets/:sheetId/rows/:rowId  -> update row (recalc sum-columns)
-//  GET    /sheets/:sheetId/rows/:rowId  -> get a specific row
-//  GET    /sheets/:sheetId/export       -> export sheet to Excel (.xlsx)
+// !!!!!!!! THIS IS A PROPER WORKING DEMO FILE BEFORE FORMATTING !!!!!!!!!!
+// ANY DOUBTS REFER THIS, IT HAS THE COMPLETE AND CORRECT LOGIC !!!!!!!!!!
 
 const express = require("express");
 const bodyParser = require("body-parser");
@@ -19,20 +13,25 @@ const upload = multer({ storage: multer.memoryStorage() });
 
 // -------------------- Pool (single shared instance) --------------------
 const pool = new Pool({
-  user: process.env.PG_USER || "postgres",
-  host: process.env.PG_HOST || "localhost",
-  database: process.env.PG_DATABASE || "rankIt_db",
-  password: process.env.PG_PASSWORD || "dpka",
+  user: process.env.PG_USER || "hackEvalAdmin",
+  host:
+    process.env.PG_HOST ||
+    "hackeval-postgres-server.postgres.database.azure.com",
+  database: process.env.PG_DATABASE || "hackeval-Db",
+  password: process.env.PG_PASSWORD || "EvalAd25",
   port: process.env.PG_PORT ? Number(process.env.PG_PORT) : 5432,
 
   // tuning: adjust for your environment
-  max: process.env.PG_MAX_CLIENTS ? Number(process.env.PG_MAX_CLIENTS) : 20, // max pooled clients
+  max: process.env.PG_MAX_CLIENTS ? Number(process.env.PG_MAX_CLIENTS) : 10, // max pooled clients
   idleTimeoutMillis: process.env.PG_IDLE_MS
     ? Number(process.env.PG_IDLE_MS)
     : 30000,
   connectionTimeoutMillis: process.env.PG_CONN_TIMEOUT_MS
     ? Number(process.env.PG_CONN_TIMEOUT_MS)
-    : 2000,
+    : 5000,
+  ssl: {
+    rejectUnauthorized: false, // skip certificate validation (Azure's CA is trusted)
+  },
 });
 // app.js
 // Node.js + Express backend using a single shared pg.Pool (persistent across requests)
@@ -164,6 +163,116 @@ async function getTableName(clientOrPool, sheetId) {
 
 // -------------------- Endpoints --------------------
 
+// GET /sheets
+// Optional query:
+//   includeColumns=true  -> include column metadata for each sheet (default: true)
+//   limit=<n>            -> limit number of sheets returned (optional)
+//   offset=<n>           -> pagination offset (optional)
+app.get("/sheets", async (req, res) => {
+  try {
+    const includeColumns =
+      String(req.query.includeColumns ?? "true").toLowerCase() === "true";
+    const limit = req.query.limit ? Number(req.query.limit) : null;
+    const offset = req.query.offset ? Number(req.query.offset) : null;
+
+    if (
+      (limit !== null && Number.isNaN(limit)) ||
+      (offset !== null && Number.isNaN(offset))
+    ) {
+      return res
+        .status(400)
+        .json({ error: "limit and offset must be numbers" });
+    }
+
+    if (includeColumns) {
+      // Aggregate columns as JSON array per sheet
+      // Uses FILTER to avoid aggregating null rows when a sheet has no columns.
+      const q = `
+        SELECT
+          s.id,
+          s.name,
+          s.table_name,
+          s.created_at,
+          COALESCE(json_agg(
+            json_build_object(
+              'id', sc.id,
+              'column_name', sc.column_name,
+              'data_type', sc.data_type,
+              'sum_of', CASE WHEN sc.sum_of IS NOT NULL THEN sc.sum_of::json ELSE NULL END,
+              'created_at', sc.created_at
+            )
+            ) FILTER (WHERE sc.id IS NOT NULL), '[]') AS columns
+        FROM sheets s
+        LEFT JOIN sheet_columns sc ON sc.sheet_id = s.id
+        GROUP BY s.id
+        ORDER BY s.created_at DESC
+        ${limit ? `LIMIT ${limit}` : ""}
+        ${offset ? `OFFSET ${offset}` : ""};
+      `;
+      const { rows } = await pool.query(q);
+      return res.json({ sheets: rows });
+    } else {
+      // Simple list without columns
+      const q2 = `
+        SELECT id, name, table_name, created_at
+        FROM sheets
+        ORDER BY created_at DESC
+        ${limit ? `LIMIT ${limit}` : ""}
+        ${offset ? `OFFSET ${offset}` : ""};
+      `;
+      const { rows } = await pool.query(q2);
+      return res.json({ sheets: rows });
+    }
+  } catch (err) {
+    console.error("Error listing sheets:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// GET /sheets/:sheetId/columns
+// Returns column metadata for the sheet (names, data types, sum_of info)
+app.get("/sheets/:sheetId/columns", async (req, res) => {
+  const sheetId = Number(req.params.sheetId);
+  try {
+    if (Number.isNaN(sheetId))
+      return res.status(400).json({ error: "Invalid sheetId" });
+
+    // Use a pooled client for a single read (no transaction needed)
+    const client = await pool.connect();
+    try {
+      // verify sheet exists and fetch metadata
+      const sheetQ = await client.query(
+        "SELECT id, name, table_name, created_at FROM sheets WHERE id = $1",
+        [sheetId]
+      );
+      if (!sheetQ.rows.length)
+        return res.status(404).json({ error: "Sheet not found" });
+
+      // Use existing helper to fetch columns (returns parsed sum_of JSON)
+      const columns = await getColumnsForSheet(client, sheetId);
+
+      // Return only names + type + sum_of (or full objects if you prefer)
+      const colsSummary = columns.map((c) => ({
+        column_name: c.column_name,
+        data_type: c.data_type,
+        sum_of: c.sum_of, // either null or array of source column names
+      }));
+
+      return res.json({
+        sheetId,
+        sheetName: sheetQ.rows[0].name,
+        tableName: sheetQ.rows[0].table_name,
+        columns: colsSummary,
+      });
+    } finally {
+      client.release();
+    }
+  } catch (err) {
+    console.error("Error fetching sheet columns:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
 // Create a new sheet (table + metadata)
 // POST /sheets
 // body: { sheetName: string, columns: [{ name, type, sum_of? }] }
@@ -223,6 +332,47 @@ app.post("/sheets", async (req, res) => {
     });
   } catch (err) {
     console.error("Error creating sheet:", err);
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// DELETE /sheets/:sheetId
+// Deletes the sheet metadata and the actual table from the database
+app.delete("/sheets/:sheetId", async (req, res) => {
+  const sheetId = Number(req.params.sheetId);
+  try {
+    if (Number.isNaN(sheetId)) {
+      return res.status(400).json({ error: "Invalid sheetId" });
+    }
+
+    const result = await withClient(async (client) => {
+      // Get the sheet info
+      const { rows } = await client.query(
+        "SELECT table_name, name FROM sheets WHERE id = $1",
+        [sheetId]
+      );
+      if (rows.length === 0) {
+        throw new Error("Sheet not found");
+      }
+
+      const { table_name: tableName, name: sheetName } = rows[0];
+
+      // Drop the physical table (use safe identifier)
+      await client.query(`DROP TABLE IF EXISTS "${tableName}" CASCADE;`);
+
+      // Delete from sheets (will cascade to sheet_columns)
+      await client.query("DELETE FROM sheets WHERE id = $1", [sheetId]);
+
+      return { sheetName, tableName };
+    });
+
+    res.json({
+      message: "Sheet deleted successfully",
+      deletedSheet: result.sheetName,
+      deletedTable: result.tableName,
+    });
+  } catch (err) {
+    console.error("Error deleting sheet:", err);
     res.status(500).json({ error: err.message });
   }
 });
@@ -527,11 +677,9 @@ app.post("/sheets/upload-excel", upload.single("file"), async (req, res) => {
     if (worksheetName) {
       worksheet = workbook.getWorksheet(worksheetName);
       if (!worksheet)
-        return res
-          .status(400)
-          .json({
-            error: `Worksheet "${worksheetName}" not found in the uploaded file.`,
-          });
+        return res.status(400).json({
+          error: `Worksheet "${worksheetName}" not found in the uploaded file.`,
+        });
     } else {
       worksheet = workbook.worksheets[0];
       if (!worksheet)
@@ -576,11 +724,9 @@ app.post("/sheets/upload-excel", upload.single("file"), async (req, res) => {
           .map((s) => s.trim())
           .filter((s) => s.length > 0);
         if (!sourcesRaw.length) {
-          return res
-            .status(400)
-            .json({
-              error: `Invalid sum definition in header "${headerCell}"`,
-            });
+          return res.status(400).json({
+            error: `Invalid sum definition in header "${headerCell}"`,
+          });
         }
         sumSources = sourcesRaw.map(sanitizeName);
       }
@@ -667,11 +813,9 @@ app.post("/sheets/upload-excel", upload.single("file"), async (req, res) => {
     for (const [sumColIdxStr, sources] of Object.entries(sumOfMap)) {
       for (const src of sources) {
         if (!colIndexByName.hasOwnProperty(src)) {
-          return res
-            .status(400)
-            .json({
-              error: `Sum column "${sanitizedCols[Number(sumColIdxStr)]}" references unknown source column "${src}" (after sanitization)`,
-            });
+          return res.status(400).json({
+            error: `Sum column "${sanitizedCols[Number(sumColIdxStr)]}" references unknown source column "${src}" (after sanitization)`,
+          });
         }
       }
     }

@@ -1,0 +1,65 @@
+provider "azurerm" {
+  features {}
+  subscription_id = "8f41efcd-e9c7-4c9c-91cc-3552df4a710e"
+}
+
+resource "azurerm_app_service_plan" "hackeval_plan" {
+  name                = "asp-hackeval-dev"
+  location            = azurerm_resource_group.hackeval.location
+  resource_group_name = azurerm_resource_group.hackeval.name
+  kind                = "Windows"
+
+  sku {
+    tier = "Free"
+    size = "F1"
+  }
+}
+
+output "resource_group_name" {
+  value = azurerm_resource_group.hackeval.name
+}
+
+output "storage_account_name" {
+  value = azurerm_storage_account.tfstate.name
+}
+
+output "function_app_name" {
+  value = azurerm_function_app.hackeval_function.name
+}
+
+output "cosmosdb_account_name" {
+  value = azurerm_cosmosdb_account.hackeval_cosmos.name
+}
+
+variable "location" {
+  description = "Azure region for all resources"
+  type        = string
+  default     = "centralindia"
+}
+
+terraform {
+  required_version = ">= 1.5.0"
+
+  required_providers {
+    azurerm = {
+      source  = "hashicorp/azurerm"
+      version = "~> 4.47"
+    }
+  }
+}
+
+# Storage Account
+resource "azurerm_storage_account" "tfstate" {
+  name                     = "hackevaltfdev001" # must be globally unique
+  resource_group_name      = azurerm_resource_group.hackeval.name
+  location                 = azurerm_resource_group.hackeval.location
+  account_tier             = "Standard"
+  account_replication_type = "LRS"
+}
+
+# Storage Container
+resource "azurerm_storage_container" "tfstate" {
+  name                  = "tfstate"
+  storage_account_name  = azurerm_storage_account.tfstate.name
+  container_access_type = "private"
+}
