@@ -15,7 +15,7 @@ app.use("/", sheetsRouter);
 // simple health check
 app.get("/health", (req, res) => res.json({ status: "ok" }));
 
-const PORT = Number(process.env.PORT);
+const PORT = process.env.PORT ? Number(process.env.PORT) : 4000;
 const server = app.listen(PORT, () =>
   console.log(`Sheet backend running on port ${PORT}`)
 );
