@@ -51,7 +51,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: node-backend
-          path: ./artifact
+          path: ./backend
 
       - name: Inspect artifact contents
         run: ls -laR ./artifact || true
