@@ -526,7 +526,7 @@ async function uploadExcel(fileBuffer, options = {}) {
     const safeSheetName = sanitizeName(
       options.sheetName || `import_${Date.now()}`
     );
-    const tableName = `sheet_${safeSheetName}_${Date.now()}`;
+    const tableName = `${safeSheetName}_${Date.now()}`;
     const insertSheet = await client.query(
       "INSERT INTO sheets(name, table_name) VALUES($1, $2) RETURNING id",
       [options.sheetName || tableName, tableName]
