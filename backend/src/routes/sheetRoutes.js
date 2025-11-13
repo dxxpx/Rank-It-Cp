@@ -4,6 +4,11 @@ const router = express.Router();
 const multer = require("../upload/multer");
 const sheets = require("../services/sheetsService");
 const ExcelJS = require("exceljs");
+const {
+  uploadBufferToBlob,
+  generateBlobSasUrl,
+  DEFAULT_CONTAINER,
+} = require("../services/storage_service.js"); // adjust path
 
 function sendError(res, err) {
   const status = err.status && Number.isInteger(err.status) ? err.status : 500;
@@ -136,16 +141,36 @@ router.get("/sheets/:sheetId/export", async (req, res) => {
       for (const c of columns) rowVals.push(r[c.column_name]);
       ws.addRow(rowVals);
     }
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+
+    const buffer = await wb.xlsx.writeBuffer();
+    const friendly = (sheetMeta.name || `sheet_${sheetId}`).replace(
+      /[^A-Za-z0-9_\-]/g,
+      "_"
     );
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="${sheetMeta.name || "sheet"}.xlsx"`
+    const ts = Date.now();
+    const blobName = `${friendly}.xlsx`;
+    const containerName =
+      process.env.AZURE_STORAGE_CONTAINER || DEFAULT_CONTAINER;
+    const blobUrl = await uploadBufferToBlob(buffer, blobName, containerName);
+    const sasTtlSeconds = process.env.AZURE_SAS_EXPIRY_SECONDS
+      ? Number(process.env.AZURE_SAS_EXPIRY_SECONDS)
+      : process.env.AZURE_SAS_TTL_HOURS
+        ? Number(process.env.AZURE_SAS_TTL_HOURS) * 3600
+        : 3600;
+    const { sasUrl, expiresOn } = generateBlobSasUrl(
+      containerName,
+      blobName,
+      sasTtlSeconds
     );
-    await wb.xlsx.write(res);
-    res.end();
+
+    // Return JSON with download URL
+    return res.json({
+      message: "Export uploaded to storage",
+      downloadUrl: sasUrl,
+      expiresOn: expiresOn.toISOString(),
+      blobName,
+      containerName,
+    });
   } catch (err) {
     sendError(res, err);
   }
